@@ -1,99 +1,50 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json",
-    "contentVersion": "1.0.0.0",
-    "variables": {
-      "vmssName": "aks-gppool-32334467-vmss",
-      "instanceCount": "1",
-      "vmSize": "Standard_DS2_v2",
-      "virtualNetworkName": "[concat(variables('vmssName'), 'vnet')]",
-      "subnetName": "[concat(variables('vmssName'), 'subnet')]",
-      "nicName": "[concat(variables('vmssName'), 'nic')]",
-      "ipConfigName": "[concat(variables('vmssName'), 'ipconfig')]",
-      "addressPrefix": "10.0.0.0/16",
-      "subnetPrefix": "10.0.0.0/24",
-      "publicIPAddressName": "[concat(variables('vmssName'), 'publicip')]",
-      "networkSecurityGroupName": "[concat(variables('vmssName'), 'nsg')]",
-      "loadBalancerName": "[concat(variables('vmssName'), 'lb')]",
-      "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
-      "lbID": "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
-      "natPoolName": "[concat(variables('vmssName'), 'natpool')]",
-      "bePoolName": "[concat(variables('vmssName'), 'bepool')]",
-      "frontEndIPConfigID": "[concat(variables('lbID'), '/frontendIPConfigurations/loadBalancerFrontEnd')]",
-      "location": "[resourceGroup().location]",
-      "osType": {
-        "publisher": "Canonical",
-        "offer": "UbuntuServer",
-        "sku": "16.04-LTS",
-        "version": "latest"
-      },
-      "imageReference": "[variables('osType')]",
-      "computeApiVersion": "2017-12-01",
-      "networkApiVersion": "2017-10-01"
-    },
-    "resources": [
-      {
-        "type": "Microsoft.Insights/autoscaleSettings",
-        "apiVersion": "2015-04-01",
-        "name": "Autoscale",
-        "location": "[variables('location')]",
-        "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]"
-        ],
-        "properties": {
-          "name": "Autoscale",
-          "targetResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
-          "enabled": true,
-          "profiles": [
+    "location": "centralus",
+    "tags": {},
+    "properties": {
+        "name": "aks-gppool-32334467-vmss-Autoscale-799",
+        "enabled": false,
+        "predictiveAutoscalePolicy": {
+            "scaleMode": "Disabled"
+        },
+        "targetResourceUri": "/subscriptions/f4cb4c79-283a-4373-b90c-0a9711f07723/resourceGroups/gpazurerg/providers/Microsoft.Compute/virtualMachineScaleSets/aks-gppool-32334467-vmss",
+        "profiles": [
             {
-              "name": "Autoscale by percentage based on CPU usage",
-              "capacity": {
-                "minimum": "2",
-                "maximum": "10",
-                "default": "2"
-              },
-              "rules": [
-                {
-                  "metricTrigger": {
-                    "metricName": "Percentage CPU",
-                    "metricNamespace": "",
-                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
-                    "timeGrain": "PT1M",
-                    "statistic": "Average",
-                    "timeWindow": "PT5M",
-                    "timeAggregation": "Average",
-                    "operator": "GreaterThan",
-                    "threshold": 70
-                  },
-                  "scaleAction": {
-                    "direction": "Increase",
-                    "type": "ChangeCount",
-                    "value": "3",
-                    "cooldown": "PT5M"
-                  }
+                "name": "Auto created scale condition",
+                "capacity": {
+                    "minimum": "1",
+                    "maximum": "4",
+                    "default": "1"
                 },
-                {
-                  "metricTrigger": {
-                    "metricName": "Percentage CPU",
-                    "metricNamespace": "",
-                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
-                    "timeGrain": "PT1M",
-                    "statistic": "Average",
-                    "timeWindow": "PT5M",
-                    "timeAggregation": "Average",
-                    "operator": "LessThan",
-                    "threshold": 30
-                  },
-                  "scaleAction": {
-                    "direction": "Decrease",
-                    "type": "ChangeCount",
-                    "value": "1",
-                    "cooldown": "PT5M"
-                  }
-                }
-              ]
+                "rules": [
+                    {
+                        "scaleAction": {
+                            "direction": "Increase",
+                            "type": "ChangeCount",
+                            "value": "1",
+                            "cooldown": "PT5M"
+                        },
+                        "metricTrigger": {
+                            "metricName": "Percentage CPU",
+                            "metricNamespace": "microsoft.compute/virtualmachinescalesets",
+                            "metricResourceUri": "/subscriptions/f4cb4c79-283a-4373-b90c-0a9711f07723/resourceGroups/gpazurerg/providers/Microsoft.Compute/virtualMachineScaleSets/aks-gppool-32334467-vmss",
+                            "operator": "GreaterThan",
+                            "statistic": "Average",
+                            "threshold": 70,
+                            "timeAggregation": "Average",
+                            "timeGrain": "PT1M",
+                            "timeWindow": "PT10M",
+                            "Dimensions": [],
+                            "dividePerInstance": false
+                        }
+                    }
+                ]
             }
-          ]
-        }
-      }
-    ]
-  }
+        ],
+        "notifications": [],
+        "targetResourceLocation": "centralus"
+    },
+    "id": "/subscriptions/f4cb4c79-283a-4373-b90c-0a9711f07723/resourceGroups/gpazurerg/providers/microsoft.insights/autoscalesettings/aks-gppool-32334467-vmss-Autoscale-799",
+    "name": "aks-gppool-32334467-vmss-Autoscale-799",
+    "type": "Microsoft.Insights/autoscaleSettings"
+}
