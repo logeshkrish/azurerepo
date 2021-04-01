@@ -186,13 +186,13 @@
         "type": "Microsoft.Insights/autoscaleSettings",
         "apiVersion": "2015-04-01",
         "name": "Autoscale",
-        "location": "[variables('location')]",
+        "location": "centralus",
         "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]"
+          "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_gppool_32334467_vmss_name'))]"
         ],
         "properties": {
           "name": "Autoscale",
-          "targetResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
+          "targetResourceUri": "/subscriptions/f4cb4c79-283a-4373-b90c-0a9711f07723/resourceGroups/gpazurerg/providers/Microsoft.Compute/virtualMachineScaleSets/aks-gppool-32334467-vmss",
           "enabled": true,
           "profiles": [
             {
@@ -207,7 +207,7 @@
                   "metricTrigger": {
                     "metricName": "Percentage CPU",
                     "metricNamespace": "",
-                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
+                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', parameters('virtualMachineScaleSets_aks_gppool_32334467_vmss_name'))]",
                     "timeGrain": "PT1M",
                     "statistic": "Average",
                     "timeWindow": "PT5M",
@@ -226,7 +226,7 @@
                   "metricTrigger": {
                     "metricName": "Percentage CPU",
                     "metricNamespace": "",
-                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]",
+                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', parameters('virtualMachineScaleSets_aks_gppool_32334467_vmss_name'))]",
                     "timeGrain": "PT1M",
                     "statistic": "Average",
                     "timeWindow": "PT5M",
